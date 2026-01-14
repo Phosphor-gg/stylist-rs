@@ -47,7 +47,7 @@ features = [
 log = "0.4.17"
 env_logger = "0.10.0"
 trybuild = "1.0.72"
-yew = "0.21"
+yew = "0.22.0"
 rustversion = "1"
 
 [features]
