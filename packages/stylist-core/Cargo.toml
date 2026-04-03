@@ -1,6 +1,6 @@
 [package]
 name = "stylist-core"
-version = "0.13.0"
+version = "0.15.1"
 license = "MIT"
 repository = "https://github.com/futursolo/stylist-rs"
 authors = [
@@ -14,7 +14,7 @@ categories = ["wasm", "web-programming"]
 readme = "README.md"
 homepage = "https://github.com/futursolo/stylist-rs"
 resolver = "2"
-rust-version = "1.66.0"
+rust-version = "1.84.0"
 
 [dependencies]
 nom = { version = "7.1.1", optional = true }
@@ -33,3 +33,9 @@ wasm-bindgen-test = "0.3.33"
 [features]
 parser = ["dep:nom"]
 __proc_macro_workaround = []
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = [
+    'cfg(releasing)',
+    'cfg(documenting)',
+] }

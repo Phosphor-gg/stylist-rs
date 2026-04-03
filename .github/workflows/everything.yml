@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@nightly
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -40,14 +40,14 @@ jobs:
       - name: Run cargo clippy
         run: cargo clippy --all --all-features
         env:
-          RUSTFLAGS: '--cfg releasing'
+          RUSTFLAGS: "--cfg releasing"
 
   test-native-stable:
     name: Run Native Tests (Stable)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -60,17 +60,17 @@ jobs:
       - name: Run cargo test
         run: cargo test --all-features --all
         env:
-          RUSTFLAGS: '--cfg releasing'
+          RUSTFLAGS: "--cfg releasing"
 
   test-native-msrv:
     name: Run Native Tests (MSRV)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@1.66.0
+        uses: dtolnay/rust-toolchain@1.84.0
         with:
           components: rustfmt, clippy
 
@@ -84,14 +84,14 @@ jobs:
           cargo test --all-features --package stylist-macros
           cargo test --all-features --package stylist
         env:
-          RUSTFLAGS: '--cfg releasing'
+          RUSTFLAGS: "--cfg releasing"
 
   test-web:
     name: Run Browser Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -103,14 +103,14 @@ jobs:
         uses: Swatinem/rust-cache@v2
 
       - name: Setup trunk
-        uses: jetli/trunk-action@v0.4.0
+        uses: jetli/trunk-action@v0.5.1
         with:
-          version: 'latest'
+          version: "latest"
 
       - name: Run cargo build --all --target=wasm32-unknown-unknown
         run: cargo build --all --target=wasm32-unknown-unknown
         env:
-          RUSTFLAGS: '--cfg releasing'
+          RUSTFLAGS: "--cfg releasing"
 
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
@@ -132,7 +132,7 @@ jobs:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -148,13 +148,13 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: cargo publish --dry-run --manifest-path packages/stylist-core/Cargo.toml
         env:
-          RUSTFLAGS: '--cfg releasing'
+          RUSTFLAGS: "--cfg releasing"
 
       - name: Run cargo publish for stylist-core
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         run: cargo publish --token ${{ secrets.CRATES_IO_TOKEN }} --manifest-path packages/stylist-core/Cargo.toml
         env:
-          RUSTFLAGS: '--cfg releasing'
+          RUSTFLAGS: "--cfg releasing"
 
       - name: Wait crates.io to Refresh
         run: sleep 30s
@@ -171,7 +171,7 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         run: cargo publish --token ${{ secrets.CRATES_IO_TOKEN }} --manifest-path packages/stylist-macros/Cargo.toml
         env:
-          RUSTFLAGS: '--cfg releasing'
+          RUSTFLAGS: "--cfg releasing"
 
       - name: Wait crates.io to Refresh
         run: sleep 30s
@@ -188,4 +188,4 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         run: cargo publish --token ${{ secrets.CRATES_IO_TOKEN }} --manifest-path packages/stylist/Cargo.toml
         env:
-          RUSTFLAGS: '--cfg releasing'
+          RUSTFLAGS: "--cfg releasing"

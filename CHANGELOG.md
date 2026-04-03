@@ -1,5 +1,29 @@
 # Changelog
 
+### v0.15.1
+
+### Other Changes
+
+- Document calc() + operator limitation in inline css! syntax.
+- Merge doc_auto_cfg into doc_cfg.
+
+### v0.15.0
+
+### Breaking Changes
+
+- Yew version is bumped to v0.23.
+
+### v0.14.0
+
+### Breaking Changes
+
+- Increase MSRV to 1.84.0.
+- Yew version is bumped to v0.22.
+
+### Other Changes
+
+- Fix non_upper_case_globals lint in some cases.
+
 ### v0.13.0
 
 ### Breaking Changes
