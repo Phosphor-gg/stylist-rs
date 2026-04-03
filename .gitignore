@@ -37,3 +37,5 @@ Temporary Items
 
 # Trunk
 dist/
+
+.idea/
