@@ -286,14 +286,41 @@ impl From<&Self> for StyleManager {
     }
 }
 
+thread_local! {
+    static DEFAULT_MGR_OVERRIDE: RefCell<Option<StyleManager>> = const { RefCell::new(None) };
+}
+
 impl Default for StyleManager {
     fn default() -> Self {
         thread_local! {
             static MGR: Lazy<StyleManager> = Lazy::new(|| StyleManager::builder().build().expect_display("Failed to create default manager."));
         }
 
+        if let Some(mgr) = DEFAULT_MGR_OVERRIDE.with(|o| o.borrow().clone()) {
+            return mgr;
+        }
+
         MGR.with(|m| (*m).clone())
     }
+}
+
+/// Override the [`StyleManager`] returned by [`StyleManager::default`] on the
+/// current thread.
+///
+/// `css!`/`style!` styles created outside a `ManagerProvider` (e.g. in shared
+/// helper functions) mount on the default manager. During SSR that default
+/// manager isn't writer-backed, so those styles can't be extracted with
+/// [`render_static`]. Setting the override to a writer-backed manager before
+/// rendering routes all such styles through it so they are captured. Call
+/// [`clear_default_manager`] afterwards.
+pub fn set_default_manager(manager: StyleManager) {
+    DEFAULT_MGR_OVERRIDE.with(|o| *o.borrow_mut() = Some(manager));
+}
+
+/// Clear the current thread's [`StyleManager::default`] override set by
+/// [`set_default_manager`].
+pub fn clear_default_manager() {
+    DEFAULT_MGR_OVERRIDE.with(|o| *o.borrow_mut() = None);
 }
 
 #[cfg(any(feature = "ssr", feature = "hydration"))]
